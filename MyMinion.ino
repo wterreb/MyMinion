@@ -121,17 +121,29 @@ void read_file_contents() {
     while (myFile.available()) {  // read from the file until there's nothing else in it:
       char c = (char)myFile.read();
        if (debugMode) {
-          Serial.print(c);
+          if (c == '+') {
+              Serial.print("\r\n");
+          }
+          else {
+             Serial.print(c);
+          }
        } else {    
-          Keyboard.print(c);                //  Send as keyboard chars
+          if (c == '+') {
+               Keyboard.press(KEY_RETURN);       // Press the Enter key.
+               delay(100);                       // Wait for the computer to register the press.
+          }
+          else {
+            Keyboard.print(c);                //  Send as keyboard chars
+          }
+         
        }
     }
     myFile.close();
     if (debugMode) {
     Serial.println(" ");
     } else {
-        Keyboard.press(KEY_RETURN);       // Press the Enter key.
-        delay(100);                       // Wait for the computer to register the press.
+     //   Keyboard.press(KEY_RETURN);       // Press the Enter key.
+     //   delay(100);                       // Wait for the computer to register the press.
         Keyboard.releaseAll();
     }
   } else {       
@@ -159,6 +171,7 @@ bool read_serial() {
         Serial.print(rc);
       }
       if (myFile) {
+          delay(100);
           myFile.close();  
       }
       if ( SD.exists(filename) ) {
