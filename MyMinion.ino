@@ -112,14 +112,21 @@ void normal_mode(char key) {
 
 void read_file_contents() {
   myFile = SD.open(filename);  
+  String inStr = "";
+  
   if (myFile) {
-     
     if (debugMode) {
       Serial.print("Read file "); Serial.println(filename);
     }
-    
+
     while (myFile.available()) {  // read from the file until there's nothing else in it:
-      char c = (char)myFile.read();
+     // char c = (char)myFile.read();
+      inStr = myFile.readString();  //read until timeout
+    }
+    myFile.close();
+
+    for(int i =0; i < inStr.length(); i++ ) {
+       char c = inStr[i];
        if (debugMode) {
           if (c == '+') {
               Serial.print("\r\n");
@@ -130,7 +137,7 @@ void read_file_contents() {
        } else {    
           if (c == '+') {
                Keyboard.press(KEY_RETURN);       // Press the Enter key.
-               delay(100);                       // Wait for the computer to register the press.
+               delay(500);                       // Wait for the computer to register the press.
           }
           else {
             Keyboard.print(c);                //  Send as keyboard chars
@@ -138,7 +145,6 @@ void read_file_contents() {
          
        }
     }
-    myFile.close();
     if (debugMode) {
     Serial.println(" ");
     } else {
